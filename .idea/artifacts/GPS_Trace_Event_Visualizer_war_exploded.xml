@@ -1,0 +1,18 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="GPS-Trace-Event-Visualizer:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/GPS_Trace_Event_Visualizer_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="GPS-Trace-Event-Visualizer/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="GPS-Trace-Event-Visualizer" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: javax.servlet:servlet-api:2.5" />
+          <element id="library" level="project" name="Maven: org.freemarker:freemarker:2.3.23" />
+          <element id="library" level="project" name="Maven: org.json:json:20171018" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
