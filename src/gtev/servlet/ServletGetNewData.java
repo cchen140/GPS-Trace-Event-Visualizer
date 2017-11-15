@@ -1,5 +1,6 @@
 package gtev.servlet;
 
+import gtev.TraceEventRecordParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,29 +15,37 @@ import java.io.PrintWriter;
  * Created by cy on 11/14/2017.
  */
 public class ServletGetNewData extends HttpServlet {
+    final String RECORD_FOLDER_PATH = "/resources/records";
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        long requiredTimestamp = Long.valueOf(request.getParameter("timestamp"));
+        String absoluteRecordFolderPath = getServletContext().getRealPath(RECORD_FOLDER_PATH);
 
-        JSONArray jsonArrayMarkers = new JSONArray();
-        JSONArray jsonArrayPaths = new JSONArray();
+        TraceEventRecordParser traceEventRecordParser = new TraceEventRecordParser(absoluteRecordFolderPath);
 
-        /* Markers */
-        for (int i=0; i<5; i++) {
-            JSONObject newJsonObjectMarker = new JSONObject();//"{\"name\": \"John\", \"aa\":\"Kally\"}");
-            //newJsonObjectMarker.put("id", i);
-            newJsonObjectMarker.put("lat", -12.044012922866312+i);
-            newJsonObjectMarker.put("lng", -77.02470665341184+i);
-            jsonArrayMarkers.put(newJsonObjectMarker);
-        }
+        JSONArray jsonArrayMarkers = traceEventRecordParser.getJSONArrayMarkersAfterTimestamp(requiredTimestamp);
+        JSONArray jsonArrayPaths = traceEventRecordParser.getSJONArrayWaypointsAfterTimestamp(requiredTimestamp);
 
-        /* Paths */
-        for (int i=0; i<5; i++) {
-            JSONObject newJsonObjectPath = new JSONObject();//"{\"name\": \"John\", \"aa\":\"Kally\"}");
-            newJsonObjectPath.put("lat", -12.044012922866312-i);
-            newJsonObjectPath.put("lng", -77.02470665341184-i);
-            jsonArrayPaths.put(newJsonObjectPath);
-        }
+//        JSONArray jsonArrayMarkers = new JSONArray();
+//        JSONArray jsonArrayPaths = new JSONArray();
+//
+//        /* Markers */
+//        for (int i=0; i<5; i++) {
+//            JSONObject newJsonObjectMarker = new JSONObject();//"{\"name\": \"John\", \"aa\":\"Kally\"}");
+//            //newJsonObjectMarker.put("id", i);
+//            newJsonObjectMarker.put("lat", -12.044012922866312+i);
+//            newJsonObjectMarker.put("lng", -77.02470665341184+i);
+//            jsonArrayMarkers.put(newJsonObjectMarker);
+//        }
+//
+//        /* Paths */
+//        for (int i=0; i<5; i++) {
+//            JSONObject newJsonObjectPath = new JSONObject();//"{\"name\": \"John\", \"aa\":\"Kally\"}");
+//            newJsonObjectPath.put("lat", -12.044012922866312-i);
+//            newJsonObjectPath.put("lng", -77.02470665341184-i);
+//            jsonArrayPaths.put(newJsonObjectPath);
+//        }
 
         /* Combine them all */
         JSONObject jsonObjectResult = new JSONObject();

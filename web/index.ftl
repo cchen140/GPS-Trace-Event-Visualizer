@@ -34,6 +34,7 @@
             });
         });
 
+        var lastTimestamp = 0;
         var oneSecondTimerEvent = setInterval(function() {
             //console.log("test");
 
@@ -41,7 +42,7 @@
                 url: "./getNewData",
                 type: "GET",
                 data: {
-                    seqNum: 1
+                    timestamp: lastTimestamp
                 },
                 dataType: "json",
                 success: function(result) {
@@ -54,6 +55,10 @@
                             lng: value["lng"]
                             //title: 'Lima',
                         });
+
+                        if(value["timestamp"] > lastTimestamp) {
+                            lastTimestamp = value["timestamp"];
+                        }
                     });
 
                     var newPaths = [];
@@ -61,6 +66,9 @@
                         //console.log(key + ":" + value);
 
                         newPaths.push([value["lat"], value["lng"]]);
+                        if(value["timestamp"] > lastTimestamp) {
+                            lastTimestamp = value["timestamp"];
+                        }
                     });
                     console.log(newPaths);
 
