@@ -1,13 +1,12 @@
 package gtev;
 
 import cy.utility.file.FileHandler;
-import cy.utility.file.FileUtility;
+import gtev.cli.RecordReceiverSerialConnection;
+import gtev.cli.VirtualRecordFile;
 import gtev.map.Marker;
 import gtev.map.Waypoint;
 import org.json.JSONArray;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -16,20 +15,20 @@ import java.util.ArrayList;
 public class TraceEventRecordParser extends FileHandler {
     String recordFolderPath;
 
-    BufferedReader recordFileReader;
+    //BufferedReader recordFileReader;
+    VirtualRecordFile recordFileReader;
 
     ArrayList<Marker> markers = new ArrayList();
     ArrayList<Waypoint> waypoints = new ArrayList<>();
 
-    public TraceEventRecordParser(String recordFolderPath) {
-        this.recordFolderPath = recordFolderPath;
+    public TraceEventRecordParser() {
+//    public TraceEventRecordParser(String recordFolderPath) {
+//        this.recordFolderPath = recordFolderPath;
+//
+//        File recordFile = FileUtility.getTheNewestFile(this.recordFolderPath, "txt");
+//        this.recordFileReader = openFile(recordFile.getPath());
 
-        System.out.println(recordFolderPath);
-
-        File recordFile = FileUtility.getTheNewestFile(this.recordFolderPath, "txt");
-        this.recordFileReader = openFile(recordFile.getPath());
-
-        //System.out.println(recordFile.getPath());
+        recordFileReader = RecordReceiverSerialConnection.recordFile;
 
         parseAllLines();
     }
@@ -41,8 +40,21 @@ public class TraceEventRecordParser extends FileHandler {
         String thisLine;
 
         try {
+            recordFileReader.resetReadPointer();
             while ((thisLine = recordFileReader.readLine()) != null) {
+                if (thisLine.trim().equalsIgnoreCase("")) {
+                    // This line is empty.
+                    continue;
+                } else if (thisLine.substring(0,1).equalsIgnoreCase("#")) {
+                    // This line is commented.
+                    continue;
+                }
+
                 String columnStrings[] = thisLine.split(";", 0);
+
+                if (columnStrings.length == 1) {
+                    continue;
+                }
 
                 int typeId = Integer.valueOf(columnStrings[1].trim());
 
@@ -52,6 +64,7 @@ public class TraceEventRecordParser extends FileHandler {
                             Long.valueOf(columnStrings[0].trim()),
                             Double.valueOf(columnStrings[4].trim()),
                             Double.valueOf(columnStrings[5].trim()),
+                            Integer.valueOf(columnStrings[2].trim()),
                             columnStrings[6].trim()
                     );
                     markers.add(newMarker);
@@ -77,8 +90,6 @@ public class TraceEventRecordParser extends FileHandler {
                 markers) {
             if (thisMarker.getTimestamp() >= timestamp) {
                 resultJsonArray.put(thisMarker.getJson());
-            } else {
-                break;
             }
         }
         return resultJsonArray;
@@ -90,8 +101,6 @@ public class TraceEventRecordParser extends FileHandler {
                 waypoints) {
             if (thisWaypoint.getTimestamp() >= timestamp) {
                 resultJsonArray.put(thisWaypoint.getJson());
-            } else {
-                break;
             }
         }
         return resultJsonArray;

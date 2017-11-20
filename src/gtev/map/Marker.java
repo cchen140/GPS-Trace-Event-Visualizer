@@ -10,11 +10,13 @@ public class Marker {
     double lat;
     double lng;
     String label;
+    int mode;
 
-    public Marker(long timestamp, double lat, double lng, String label) {
+    public Marker(long timestamp, double lat, double lng, int mode, String label) {
         this.timestamp = timestamp;
         this.lat = lat;
         this.lng = lng;
+        this.mode = mode;
         this.label = label;
     }
 
@@ -39,6 +41,7 @@ public class Marker {
         resultJson.put("timestamp", timestamp);
         resultJson.put("lat", lat);
         resultJson.put("lng", lng);
+        resultJson.put("mode", mode);
         resultJson.put("label", label);
         return resultJson;
     }

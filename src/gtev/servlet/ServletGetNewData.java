@@ -1,6 +1,7 @@
 package gtev.servlet;
 
 import gtev.TraceEventRecordParser;
+import gtev.cli.RecordReceiverSerialConnection;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -19,10 +20,12 @@ public class ServletGetNewData extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
         long requiredTimestamp = Long.valueOf(request.getParameter("timestamp"));
         String absoluteRecordFolderPath = getServletContext().getRealPath(RECORD_FOLDER_PATH);
 
-        TraceEventRecordParser traceEventRecordParser = new TraceEventRecordParser(absoluteRecordFolderPath);
+        TraceEventRecordParser traceEventRecordParser = new TraceEventRecordParser();
+//        TraceEventRecordParser traceEventRecordParser = new TraceEventRecordParser(absoluteRecordFolderPath);
 
         JSONArray jsonArrayMarkers = traceEventRecordParser.getJSONArrayMarkersAfterTimestamp(requiredTimestamp);
         JSONArray jsonArrayPaths = traceEventRecordParser.getSJONArrayWaypointsAfterTimestamp(requiredTimestamp);

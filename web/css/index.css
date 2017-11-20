@@ -15,5 +15,9 @@ body {
 
 #map-wrapper {
     width: 500px;
-    height: 500px;
+    height: 700px;
+}
+
+#control-pane-wrapper {
+    margin-top: 10px;
 }
